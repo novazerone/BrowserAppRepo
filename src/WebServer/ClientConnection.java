@@ -61,6 +61,7 @@ public class ClientConnection extends Thread {
 						
 				clientOut.close();
 			} catch(FileNotFoundException e) {
+				e.printStackTrace();
 				clientOut.println(error);
 				clientOut.close();
 			}
@@ -85,6 +86,6 @@ public class ClientConnection extends Thread {
 		while(filename.indexOf("/")==0) // REMOVE EXTRA "/" FROM THE FILENAME
 			filename = filename.substring(1);
 
-		filename = filename.replace('/', File.separator.charAt(0)); // REPLACE "\" WITH "/"
+		this.filename = filename.replace('/', File.separator.charAt(0)); // REPLACE "\" WITH "/"
 	}
 }
