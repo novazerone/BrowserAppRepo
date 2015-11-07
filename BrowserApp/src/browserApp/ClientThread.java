@@ -13,7 +13,6 @@ import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-
 public class ClientThread extends Thread{
 	/**
 	 * Web server port = 80
