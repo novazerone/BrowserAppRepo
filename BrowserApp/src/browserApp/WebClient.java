@@ -13,18 +13,18 @@ import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class ClientThread extends Thread{
+public class WebClient extends Thread{
 	/**
 	 * Web server port = 80
 	 */
-	private final int port = 80;
-	private final String serverName = "stackoverflow.com";
+	private final int port = 8080;
+	private final String serverName = "localhost";
 	private Socket connection;
 	private BufferedReader input;
 	private PrintWriter output;
 	
 	public static void main(String[] args) {
-		new ClientThread().start();
+		new WebClient().start();
 	}
 
 	public void run(){
@@ -41,7 +41,7 @@ public class ClientThread extends Thread{
 	private void connectToWebServer() {
 		try {
 			connection = new Socket(InetAddress.getByName(serverName), port);
-			System.out.println("[STATUS] Connected to server...");
+			System.out.println("[CLIENT] Connected to server...");
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e);
 		}
@@ -54,7 +54,7 @@ public class ClientThread extends Thread{
 		try {
 			input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			output = new PrintWriter(new BufferedOutputStream(connection.getOutputStream()), true);
-			System.out.println("[STATUS] Initialized I/O streams...");
+			System.out.println("[CLIENT] Initialized I/O streams...");
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e);
 		}
@@ -67,7 +67,7 @@ public class ClientThread extends Thread{
 		String message = "GET / HTTP/1.1\r\n" + "Host: "+serverName+"\r\n\r\n";
 		//System.out.println(message);
 		output.println(message);
-		System.out.println("[STATUS] HTTP GET request sent to [HOST:"+serverName+"]...");
+		System.out.println("[CLIENT] HTTP GET request sent to [HOST:"+serverName+"]...");
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ClientThread extends Thread{
 		String httpResponse;
 		FileWriter fileWriter = null;
 
-		System.out.println("[STATUS] Message received...");
+		System.out.println("[CLIENT] Message received...");
 
 		//create a temporary file
 		String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
@@ -86,20 +86,21 @@ public class ClientThread extends Thread{
 		try {
 			fileWriter = new FileWriter(logFile);
 
-			System.out.println("[STATUS] Writing response to text file. Please wait...");
+			System.out.println("[CLIENT] Writing response to text file. Please wait...");
 			while((httpResponse = input.readLine())!=null){
-				//System.out.println(response);
+				//System.out.println(httpResponse);
 				fileWriter.write(httpResponse+"\r\n");
 			}
 
 			fileWriter.flush();
 		} catch (SocketException e) {
 			// Connection reset: Do nothing
+			System.err.println("ERROR: " + e);
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e);
 		} finally {
 			try {
-				System.out.println("[STATUS] File saved at: "+logFile.getCanonicalPath());
+				System.out.println("[CLIENT] File saved at: "+logFile.getCanonicalPath());
 				fileWriter.close();
 			} catch (IOException e) {
 				System.err.println("ERROR: " + e);
@@ -118,7 +119,7 @@ public class ClientThread extends Thread{
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e);
 		} finally {
-			System.out.println("[STATUS] Closed socket connection and I/O streams...");
+			System.out.println("[CLIENT] Closed socket connection and I/O streams...");
 		}
 	}
 }
