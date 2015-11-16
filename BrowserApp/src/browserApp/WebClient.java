@@ -17,21 +17,27 @@ public class WebClient extends Thread{
 	/**
 	 * Web server port = 80
 	 */
-	private final int port = 8080;
-	private final String serverName = "localhost";
+	private final int port = 80;
+	private final String serverName = "stackoverflow.com";
 	private Socket connection;
 	private BufferedReader input;
 	private PrintWriter output;
+	private int i;
+	
+	public WebClient(int i) {
+		this.i = i;
+	}
 	
 	public static void main(String[] args) {
-		new WebClient().start();
+		new WebClient(0).start();
 	}
 
 	public void run(){
 		connectToWebServer();
 		initializeIOStreams();
 		sendHttpGetRequest(); //send HTTP request
-		receiveResponse(); //receive server response
+		//receiveResponse(); //receive server response
+		receiveResponse2();
 		closeConnection();
 	}
 
@@ -105,6 +111,20 @@ public class WebClient extends Thread{
 			} catch (IOException e) {
 				System.err.println("ERROR: " + e);
 			}
+		}
+	}
+	
+	private void receiveResponse2() {
+		String httpResponse;
+		
+		try {
+		while((httpResponse = input.readLine())!=null){
+			// Do nothing
+		}
+		} catch (IOException e) {
+			System.err.println("ERROR: " + e);
+		} finally {
+			System.out.println("["+i+"] OK");
 		}
 	}
 
